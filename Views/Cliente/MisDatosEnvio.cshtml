@@ -1,0 +1,122 @@
+﻿@model List<Direccion>
+<div class="container">
+    <div class="row">
+        <div class="jumbotron jumbotron-fluid">
+            <div class="container">
+                <h3 class="display-4">Direcciones de envio y facturacion</h3>
+                <p class="lead">
+                    Estas son las direcciones de envio a las que puedes hacer tus envios. Elige la que usaras por defecto donde llegaran tus pedidos
+                    (direccion principal) Las direcciones de envio son de tres tipos: personal principal, personal secundaria y laboral
+                </p>
+
+                <hr class="my-4">
+
+                <a href="" class="btn btn-primary btn-lg" role="button" data-toggle="modal" data-target="#direccionModal">
+                    NUEVA DIRECCION
+                </a>
+                <div class="modal fade" id="direccionModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog" role="document">
+                        <div class="modal-content">
+
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">Datos personales de envio y facturacion</h5>
+                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                </button>
+                            </div>
+
+                            <div class="modal-body">
+                                <p>Si desea que enviemos los pedidos a una direccion distinta a la personal principal que hizo en el registro, marquela como predeterminada</p>
+
+                                <form name="formAltaDirec" method="post" id="formdirecciones" asp-controller="Cliente" asp-action="AltaDireccion">
+                                    <div class="form-row">
+                                        <div class="form-group col-md-8">
+                                            <label for="inputAddress"><strong>Direccion de envio:</strong></label>
+                                            <input type="text" name="direccion" class="form-control" id="inputAddress" placeholder="c/nombre calle, numero, piso-letra">
+                                        </div>
+                                        <div class="form-group col-md-4">
+                                            <label for="inputTipoDireccion"><strong>Tipo Direccion:</strong></label>
+                                            <select name="tipoDireccion" id="inputTipoDireccion" class="form-control">
+                                                <option selected>Personal Principal</option>
+                                                <option selected>Personal Secundaria</option>
+                                                <option selected>Laboral u otra</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="form-row">
+                                        <div class="form-group col-md-4">
+                                            <label for="inputProvincia"><strong>Provincia</strong></label>
+                                            <select id="inputProvincia" name="codpro" class="form-control">
+                                                <option value="0" selected>Elige provincia...</option>
+                                                @{ foreach (Provincia item in ViewData["ListaProvincias"] as List<Provincia>)
+                                                    {
+                                                        <option value="@item.CodPro">@item.NombreProvincia</option>
+                                                    }
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-6">
+                                            <label for="inputLocalidad"><strong>Localidad</strong></label>
+                                            <select id="inputLocalidad" name="codmun" class="form-control" disabled>
+                                                <option value="0" selected>Elige localidad...</option>
+                                                <option>...</option>
+                                            </select>
+                                        </div>
+                                        <div class="form-group col-md-2">
+                                            <label for="inputCP"><strong>CP</strong></label>
+                                            <input type="text" name="cp" class="form-control" id="inputCP">
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+                                <button type="button" id="crearDireccion" class="btn btn-primary">Crear Direccion</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    @if (Model.Count != 0)
+    {
+        @foreach (Direccion direc in Model)
+        {
+            <div class="row">
+                <div class="col">
+                    <partial name="_VistaParcialMiniDireccion" model="direc" />
+                </div>
+            </div>
+        }
+    }
+</div>
+<script>
+    $('#inputProvincia').change(function(evt){
+        $('#inputLocalidad > option[value != 0]').remove();
+
+        var _codProv = evt.target.value; //<---codigo provincia seleccionado
+        if (_codProv !="0") {
+            $('#inputLocalidad').removeAttr('disabled');
+
+            $.get('https://localhost:44311/api/RESTAgapea/DevolverMunicipios/?codpro=' + _codProv)
+            .done((munis)=>{
+                munis.forEach((muni)=>{
+                    $('#inputLocalidad').append('<option value=' + muni.codMun + '>'+ muni.nombreMunicipio + '</option>');
+                });
+            })
+            .fail((err)=> { console.log(err) });
+        }
+    });
+
+    $('#crearDireccion').click((ev) => document.forms['formAltaDirec'].submit());
+    
+    $('a[id^=["btnEditarDireccion_"]').click((ev) => {
+        var _idDirreccion = $(ev.target).attr('id').split('_')[1];
+
+        $.ajax({
+            url: 'https://localhost:44311/api/RESTAgapea/DameDireccion', 
+            data: { calle: , cp: }  
+        })
+    });
+</script>

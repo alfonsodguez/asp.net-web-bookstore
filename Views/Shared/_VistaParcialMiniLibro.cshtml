@@ -1,0 +1,28 @@
+﻿@model Libro
+<div class="card mb-3">
+    <div class="row g-0">
+        <div class="col-md-4">
+            <img class="card-img" src="~/images/imagenLibro.png" />
+            <a class="btn btn-primary"
+               asp-controller="Pedido" asp-action="AddLibroPedido"
+               asp-all-route-data="@(new Dictionary<String, String> { { "id", Model.ISBN } })">
+               <img src="~/images/BotonComprar.png" />
+            </a>
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">
+                    <a class="card-link"
+                       asp-controller="Tienda" asp-action="MostrarLibro"
+                       asp-all-route-data="@(new Dictionary<String, String> { { "isbn", Model.ISBN },{ "idmateria", Model.IdMateria.ToString() } })">
+                        @Model.Titulo
+                    </a>
+                </h5>
+                <p class="card-text">@Model.Autores</p>
+                <p class="card-text">@Model.Editorial</p>
+                <p class="card-text"><small class="text-muted">@Model.NumeroPaginas paginas</small></p>
+                <p class="card-text"><b>@Model.Precio €</b></p>
+            </div>
+        </div>
+    </div>
+</div>

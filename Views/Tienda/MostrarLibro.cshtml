@@ -1,0 +1,38 @@
+﻿@model Libro
+<div class="container">
+    <div class="row">
+        <div class="col-3">
+            <div class="img-container">
+                <img class="card-img" src="~/images/imagenLibroDetalles.png" />
+            </div>
+        </div>
+        <div class="col-5">
+            <h5><strong>@Model.Titulo</strong></h5>
+            <h5>@Model.Autores</h5>
+            <hr/>
+            <p>Detalles Libro:</p>
+            <p>Editorial: @Model.Editorial</p>
+            <p>Paginas: @Model.NumeroPaginas</p>
+            <p>ISBN: @Model.ISBN</p>
+            <p>ISBN13: @Model.ISBN13</p>
+        </div>
+        <div class="col-4">
+            <h2><strong>@Model.Precio €</strong></h2>
+            <img src="~/images/imagenComprar_detallesLibro.png" />
+            <a class="btn btn-primary"
+               asp-controller="Pedido" asp-action="AddLibroPedido"
+               asp-all-route-data="@(new Dictionary<String, String> { { "id", Model.ISBN} })"
+            >
+                <img src="~/images/BotonComprarLibroDetalles.png" />
+            </a>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col">
+            <h3>Resumen</h3>
+            <div>
+                @Model.Descripcion
+            </div>
+        </div>
+    </div>
+</div>

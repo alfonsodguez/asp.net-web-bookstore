@@ -1,0 +1,131 @@
+﻿@model Cliente
+<div class="container">
+    <div class="row">
+        <div class="col">
+            <h2><strong>Mi Perfil de Usuario</strong></h2>
+            <p>Queremos estar en contacto contigo y ofrecerte todas nuestras ventajas y servicios por ser usuario registrado de Agapea, tanto en nuestras librerías como en Agapea.com.</p>
+
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-3">
+            <input type="file" accept="image/*" id="selectorImagen" name="imagen" style="visibility: hidden;" />
+            <a onclick="javascript:$('#selectorImagen')[0].click()">
+                <img id="imagenUsuario" style="height: 130px; width:150px; margin: 5px" src="~/images/ImgCliente.png">
+            </a>
+            <div id="respuestaServer"></div>
+            <button class="btn btn-outline-primary" id="botonUploadImagen" disabled>Subir Imagen</button>
+        </div>
+        <div class="col-9">
+            @if (!String.IsNullOrEmpty((String)ViewData["mensajesError"]))
+            {
+                <div id="mensajesError">
+                    <p><span class="text-danger">@((String)ViewData["mensajesError"])</span></p>
+                </div>
+            }
+            <form method='post' id='formGuardar' asp-action="MiPerfil" asp-controller="Cliente">
+                <div class='row'>
+                    <div class='form-group col-6'>
+                        <label for="inputNombre" class='form-label'><strong>Mi Nombre:</strong></label>
+                        <input type="text" asp-for="@Model.Nombre" class="form-control" id="inputNombre" value="@Model.Nombre">
+                    </div>
+                    <div class='form-group col-6'>
+                        <label for="inputApellidos" class='form-label'><strong>Mis Apellidos:</strong></label>
+                        <input type="text" asp-for="@Model.Apellidos" class="form-control" id="inputApellidos" value="@Model.Apellidos">
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='form-group col-6'>
+                        <label for="inputEmail4" class='form-label'><strong>Correo Electronico</strong></label>
+                        <input type="email" class="form-control" id="inputEmail4" asp-for="@Model.CredencialesCliente.Email" value="@Model.CredencialesCliente.Email">
+                    </div>
+                    <div class='form-group col-6'>
+                        <label for="inputTelefono" class='form-label'><strong>telefono de contacto:</strong></label>
+                        <input type="text" class="form-control" id="inputTelefono" asp-for="@Model.Telefono" value="@Model.Telefono">
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='form-group col-6'>
+                        <label for="usernick" class='form-label'><strong>Usuario (nickname)</strong></label>
+                        <input type="text" class="form-control" id="usernick" asp-for="@Model.CredencialesCliente.NickName" value="@Model.CredencialesCliente.NickName">
+                    </div>
+                    <div class='form-group col-6'></div>
+                </div>
+                <div class='row'>
+                    <div class='form-group col'>
+                        <label for="descripcion" class='form-label'><strong>Mi Descripcion:</strong></label>
+                        <textarea placeholder="Me gusta definirme como un lector de libros de..." id="descripcion" size="20" asp-for="@Model.Descripcion" style="margin: 0px 0px 10px; width: 601px; height: 116px;"></textarea>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='form-group col'>
+                        <p><strong>Opciones de Privacidad</strong></p>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" id="checkOpcionesPrivacidad">
+                            <label class="form-check-label" for="checkOpcionesPrivacidad">
+                                Deseo recibir información sobre libros, novedades y eventos de Agapea.como sus librerías.
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class='col'>
+                        <p><strong>Darse de baja como usuario registrado</strong></p>
+                        <p>Para dar de baja su cuenta de usuario registrado en nuestro sistema, pulse </p>
+                        <a asp-action="BorrarCuenta" asp-controller="Cliente"> aquí</a>
+                    </div>
+                </div>
+                <div class='row'>
+                    <div class='col-10'></div>
+                    <div class='col-2'>
+                        <a class='btn btn-outline-primary' onclick='javascript:$("#formGuardar").submit();'>
+                            <img src='~/images/boton_guardarCambios_MiPerfil.png'>
+                        </a>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#selectorImagen').change(function(ev){
+        var fichSeleccionado=ev.target.files[0];
+        var reader=new FileReader();
+
+        reader.addEventListener("load", function(evt){
+            $('#imagenUsuario').attr("src",evt.target.result)
+            $('#botonUploadImagen').removeAttr("disabled");
+            $('#botonUploadImagen').click(function(evtb){
+                $(evtb.target).attr('disabled','');
+                var datos=new FormData();
+                datos.append("imagen",fichSeleccionado);
+                                
+                $.ajax({
+                    method:'post',
+                    url:'https://localhost:44311/api/RESTAgapea/uploadImagen',
+                    data: datos,
+                    contentType: false, //<---ojo si pones 'multipart/form-data' no define el boundary, y multer kaska...
+                    processData: false
+                })
+                .done(function(respServer){
+                    console.log('la respuesta del servidor es...', respServer);
+                    $('#respuestaServer').append('<p class="text-danger">' + respServer.mensaje + '</p>');
+                })
+                .fail(function(error){
+                    console.log('error en peticion ajax...',error);
+                })
+                .always(function(){
+                    $('#botonUploadImagen').removeAttr('disabled');
+                });
+            });
+        });
+
+        reader.readAsDataURL(fichSeleccionado);
+    });
+</script>
+
+
+
+
+

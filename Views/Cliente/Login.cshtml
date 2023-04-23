@@ -1,0 +1,68 @@
+﻿@{Layout = null;}
+@model bookstore.Models.Cliente.Credenciales;
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AgapeaNetCore_V5</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <img src="~/images/cabecera.png">
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <h3><strong>Acceso a agapea.com</strong></h3>
+                <p>Para poder disfrutar de algunos de nuestros servicios, debes estar registrado. Registrarse en apapea.com es rapido y facil y GRATIS!</p>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-4">
+                <div>
+                    <p><h3>Identificate con...</h3></p><br />
+                    <a href="">
+                        <img src="~/images/boton_Google.png" />
+                    </a>
+                    <small>o bien con tu usuario de agapea</small>
+                </div>
+
+                <form id="formlogin" method="post" asp-action="Login" asp-controller="Cliente">
+                    <div class="form-group">
+                        <label for="email"><strong>Correo Electronico:</strong></label>
+                        <input id="email" type="email" asp-for="@Model.Email" class="form-control" placeholder="inicia sesion con tu email" />
+                        <span class="text-danger" asp-validation-for="@Model.Email"></span>
+                    </div>
+                    <div class="form-group">
+                        <label for="password"><strong>Contraseña:</strong></label>
+                        <input id="password" type="password" asp-for="@Model.Password" class="form-control" placeholder="introduce tu password" />
+                        <span class="text-danger" asp-validation-for="@Model.Password"></span>
+                    </div>
+                    <a href="javascript:;" onclick="document.forms['formlogin'].submit()" class="btn btn-primary">
+                        <img src="~/images/BotonLoginUsuario.png" />
+                    </a>
+                </form>
+
+            </div>
+            <div class="col-8">
+                <img src="~/images/formLogin.png" />
+                <a href="https://localhost:44311/Cliente/Registro">
+                    <img src="~/images/BotonRegistrarUsuario.png" />
+                </a>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
+

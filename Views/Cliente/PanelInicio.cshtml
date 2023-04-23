@@ -1,0 +1,28 @@
+﻿
+@model Cliente
+<div class="container">
+    <div class="row">
+        <h2 class="fw-bold">@Model.Nombre</h2>
+    </div>
+    <div class="row">
+        <div class="col-2">
+            <img src="/public/images/ImgCliente.png">
+        </div>
+        <div class="col-5">
+            <h5 class="text-secondary">Apodo (para tus opiniones):</h5><br>
+            <p class="text-secondary">@Model.CredencialesCliente.NickName</p><br>
+            <h5 class="text-secondary">Nombre:</h5><br>
+            <p class="text-secondary">@Model.Nombre</p><br>
+
+        </div>
+        <div class="col-5">
+            <h5 class="text-secondary">Correo electrónico:</h5><br>
+            <p class="text-secondary">@Model.CredencialesCliente.Email</p><br>
+            <h5 class="text-secondary">Teléfono de contacto:</h5><br>
+            <p class="text-secondary">@Model.Telefono</p><br>
+        </div>
+    </div>
+    <div class="row">
+        <img src="~/images/imagen_MiListaDeseos.png">
+    </div>
+</div> 

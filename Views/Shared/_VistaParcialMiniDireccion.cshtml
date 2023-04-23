@@ -1,0 +1,33 @@
+﻿@model Direccion
+<div class="card mb-3">
+    <div class="row no-gutters">
+        <div class="col-md-2">
+            <div class="form-group form-check">
+                <input type="checkbox" class="form-check-input" id="esPrincipal">
+                <label class="form-check-label" for="exampleCheck1">Direccion Principal</label>
+            </div>
+        </div>
+        <div class="col-md-8">
+            <div class="card-body">
+                <h5 class="card-title">@Model.Calle CP: @Model.CP, @Model.Municipio.NombreMunicipio ( @Model.Provincia.NombreProvincia )</h5>
+                <p class="card-text"><small class="text-muted">Direccion id: @Model.IdDireccion</small></p>
+            </div>
+        </div>
+        <div class="col-md-2">
+            <a class="btn btn-sm btn-light"
+               id="@(String.Concat("btnEditarDireccion_",Model.IdDireccion))"
+               asp-controller="Cliente"
+               asp-action="Editar"
+               asp-all-route-data="@(new Dictionary<String, String> { { "id", Model.IdDireccion} })">
+               <img src="~/images/boton_EditarDireccion_MisDatosEnvio.png" />
+            </a>
+            <a class="btn btn-sm btn-light"
+               id="@(String.Concat("btnEliminarDireccion_",Model.IdDireccion))"
+               asp-controller="Cliente"
+               asp-action="Eliminar"
+               asp-all-route-data="@(new Dictionary<String, String> { { "id", Model.IdDireccion} })">
+               <img src="~/images/boton_EliminarDireccion_MisDatosEnvio.png" />
+            </a>
+        </div>
+    </div>
+</div>

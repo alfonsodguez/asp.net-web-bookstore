@@ -1,0 +1,34 @@
+﻿@model ItemPedido
+<table class="table table-borderless">
+    <tr>
+        <td rowspan="2">
+            <img src="~/images/imagenLibro.png" />
+        </td>
+        <td><label><h4>@Model.LibroPedido.Titulo</h4></label></td>
+        <td>
+            <a asp-controller="Pedido" asp-action="EliminarLibroPedido"
+               asp-all-route-data="@(new Dictionary<String, String> { { "id", Model.LibroPedido.ISBN } })"
+               style="color:red"
+               class="btn btn-light">
+                <strong>X</strong>
+            </a>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <a asp-controller="Pedido" asp-action="RestarCantidad"
+               asp-all-route-data="@(new Dictionary<String, String> { { "id", Model.LibroPedido.ISBN } })"
+               class="btn btn-primary"
+               id="botonMenos-@Model.LibroPedido.ISBN"> - </a>
+            <label id="ISBN-@Model.LibroPedido.ISBN">@Model.CantidadLibro</label>
+            <a asp-controller="Pedido" asp-action="SumarCantidad"
+               asp-all-route-data="@(new Dictionary<String, String> { { "id", Model.LibroPedido.ISBN} })"
+               class="btn btn-primary"> + </a>
+            <label>x</label>
+            <label style="color:red">@Model.LibroPedido.Precio €</label>
+        </td>
+        <td>
+            <label style="color:red">@(Model.CantidadLibro * Model.LibroPedido.Precio)</label>
+        </td>
+    </tr>
+</table>

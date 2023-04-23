@@ -1,0 +1,94 @@
+﻿@{Layout = null;}
+@model Pedido
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>@ViewData["Title"] - AgapeaNetCore_V5</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+</head>
+<body>
+    <div>
+        <h3><b>RESUMEN DE LA CESTA:</b></h3>
+    </div>
+    <hr />
+    @{
+        if(!String.IsNullOrEmpty(TempData["ErrorServer"].ToString()))
+        {
+            <div>
+                <p><span class="text-danger">@TempData["ErrorServer"].ToString()</span></p>
+            </div>
+        }
+    }
+    <div class="container">
+        @foreach (ItemPedido item in Model.ListaPedido)
+        {
+            <div class="row">
+                <div class="col">
+                    <partial name="_VistaItemPedido" model="item" />
+                </div>
+            </div>
+        }
+        <hr />
+        <div class="row">
+            <div class="col-6"></div>
+            <div class="col-4">
+                <h5><strong>Subtotal:</strong></h5>
+            </div>
+            <div class="col-2">
+                <h5><span style="color:red"> @Model.SubTotalPedido €</span></h5>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6"></div>
+            <div class="col-4">
+                <h6><strong>Gastos de envio y gestion: </strong></h6>
+            </div>
+            <div class="col-2">
+                <h6><span style="color:red"> @Model.GastosDeEnvio €</span></h6>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-6"></div>
+            <div class="col-4">
+                <h4><strong>Total a pagar: </strong></h4>
+            </div>
+            <div class="col-2">
+                <h4><span style="color:red"><strong> @Model.TotalPedido €</strong></span></h4>
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6"></div>
+        <div class="col-3">
+            <a asp-controller="Tienda" asp-action="Libros" 
+               class="btn btn-primary">
+                <img src="~/images/boton_SeguirComprando.png" />
+            </a>
+        </div>
+        <div class="col-3">
+            <a asp-controller="Pedido"asp-action="FinalizarPedido"
+               class="btn btn-primary">
+                <img src="~/images/boton_FinalizarCompra.png" />
+            </a>
+        </div>
+    </div>
+    <script>
+        function DeshabilitarBtnMenos() {
+            Array.from(document.getElementsByTagName("label"))
+                .filter((lab) => /^ISBN-/.test(lab.id))
+                .forEach((lab) => {
+                    if (lab.innerText == '1') {
+                        lab.previousElementSibling.setAttribute("href", "javascript:void(0)");
+                    }
+                });
+        }
+
+        Array.from(document.getElementsByTagName("a"))
+            .filter((ahref) => /^botonMenos-/.test(ahref.id))
+            .forEach((ahref) => ahref.addEventListener("click", DeshabilitarBtnMenos));
+    </script>
+</body>
+</html>

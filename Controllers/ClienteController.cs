@@ -3,14 +3,11 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
- 
 using bookstore.Models;
 using bookstore.Models.Interfaces;
-
-//validaciones
+// validaciones
 using Microsoft.AspNetCore.Mvc.ModelBinding;
-
-//VARIABLE SESSION
+// variable sesion
 using Microsoft.AspNetCore.Http;
 using System.Text.Json;
 
@@ -19,22 +16,21 @@ namespace bookstore.Controllers
 {
     public class ClienteController : Controller
     {
-        private IDBAccess _servicioSQLServer;
+        private IDBAccess _servicioSqlServer;
         private IClienteEmail _servicioClienteEmail;
         private IControlSession _servicioSession; 
 
-
-        public ClienteController(IDBAccess servicioDBInyect,IClienteEmail servicioMailInyect, IControlSession servicioSessionInectado)
+        public ClienteController(IDBAccess servicioDBInyect, IClienteEmail servicioMailInyect, IControlSession servicioSessionInectado)
         {
-            this._servicioSQLServer = servicioDBInyect;      //<-- servicio acceso a datos
+            this._servicioSqlServer = servicioDBInyect;      //<-- servicio acceso a datos
             this._servicioClienteEmail = servicioMailInyect; //<-- servicio cliente de correo 
             this._servicioSession = servicioSessionInectado; //<-- servicio session 
         }
 
 
-        private async Task<List<Provincia>> ListaProvincias()
+        private async Task<List<Provincia>> _ListaProvincias()
         {
-            List<Provincia> lista = await this._servicioSQLServer.DevolverProvincias();
+            List<Provincia> lista = await this._servicioSqlServer.DevolverProvincias();
             return lista;
         }
 
@@ -42,44 +38,37 @@ namespace bookstore.Controllers
         [HttpGet]
         public async Task<IActionResult> Registro()
         {
-            ViewData["ListaProvincias"] = await this.ListaProvincias();  
+            ViewData["ListaProvincias"] = await this._ListaProvincias();  
             return View(new Cliente());  
         }
         
         [HttpPost]
-        public async Task<IActionResult> Registro(Cliente nuevoCliente) 
+        public async Task<IActionResult> Registro(Cliente cliente) 
         {
             if (ModelState.IsValid)
             {
-                if ( await _servicioSQLServer.RegistrarCliente(nuevoCliente))
+                bool registroOk = await _servicioSqlServer.RegistrarCliente(nuevoCliente)
+                if (registroOk)
                 {              
-                    String _body = "<h3><strong>Se ha registrado correctamente en Agapea.com</strong></h3>" +
+                    String destinatario = cliente.CredencialesCliente.Email
+                    String asunto = "Bienvenido al portal de Agapea.com"
+                    String adjunto = ""
+                    String body = "<h3><strong>Se ha registrado correctamente en Agapea.com</strong></h3>" +
                                     $"<br>Pulsa " +
-                                    $"<a href='https://localhost:44311/Cliente/ActivarCuenta/{nuevoCliente.CredencialesCliente.Email}'>" +
+                                    $"<a href='https://localhost:44311/Cliente/ActivarCuenta/{cliente.CredencialesCliente.Email}'>" +
                                     $"aqui</a> para activar tu cuenta";
-                    
-                    this._servicioClienteEmail.EnviarEmail(
-                        nuevoCliente.CredencialesCliente.Email, //<--- DESTINATARIO
-                        "Bienvenido al portal de Agapea.com",   //<--- ASUNTO 
-                        _body,                                  //<--- CUERPO DEL MENSAJE
-                        "");                                    //<--- nombre adjunto (opcional)
-                    
+
+                    this._servicioClienteEmail.EnviarEmail(destinatario, asunto, body, adjunto);                                   
                     return RedirectToAction("RegistroOK","Cliente");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "Error de procesado de datos en servidor, intentelo de nuevo mas tarde");
-                    ViewData["ListaProvincias"] = await this.ListaProvincias();
-                    return View(nuevoCliente); 
-                }
-            }
-            else
-            {
-                ModelState.AddModelError("", "Error en la validacion de los campos del formulario de registro");
-                ViewData["ListaProvincias"] = await this.ListaProvincias();
+
+                ModelState.AddModelError("", "Error interno, intentelo de nuevo mas tarde");
+                ViewData["ListaProvincias"] = await this._ListaProvincias();
                 return View(nuevoCliente); 
             }
-
+            ModelState.AddModelError("", "Error en la validacion de los campos del formulario de registro");
+            ViewData["ListaProvincias"] = await this._ListaProvincias();
+            return View(nuevoCliente); 
         }
 
         [HttpGet]
@@ -93,15 +82,11 @@ namespace bookstore.Controllers
         [HttpGet]
         public async Task<IActionResult> ActivarCuenta(String id)  
         {
-            if (await this._servicioSQLServer.ActivarCuenta(id)){
+            if (await this._servicioSqlServer.ActivarCuenta(id)) {
                 return RedirectToAction("Login", "Cliente");
             }
-            else
-            {
-                ModelState.AddModelError("", "Error en la activacion de la cuenta");
-
-                return RedirectToAction("ActivarCuentaFail", "Cliente");
-            }           
+            ModelState.AddModelError("", "Error en la activacion de la cuenta");
+            return RedirectToAction("ActivarCuentaFail", "Cliente");
         }
 
         [HttpGet]
@@ -119,31 +104,24 @@ namespace bookstore.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Login(Cliente.Credenciales creds)  
+        public async Task<IActionResult> Login(Cliente.Credenciales credenciales)  
         {
-            if (ModelState.GetValidationState("Email") == ModelValidationState.Valid && ModelState.GetValidationState("Password") == ModelValidationState.Valid)
+            bool credencialesValidas = ModelState.GetValidationState("Email") == ModelValidationState.Valid && ModelState.GetValidationState("Password") == ModelValidationState.Valid
+            if (credencialesValidas)
             {
-                Cliente _clienteLogin = await this._servicioSQLServer.ComprobarCredenciales(creds.Email, creds.Password);
-                if(_clienteLogin != null)
+                Cliente cliente = await this._servicioSqlServer.ComprobarCredenciales(credenciales.Email, credenciales.Password);
+                if (cliente != null)
                 {
-                    HttpContext.Session.SetString("datoscliente", JsonSerializer.Serialize(_clienteLogin));  
-                                                                                                             
+                    HttpContext.Session.SetString("datoscliente", JsonSerializer.Serialize(cliente));                                                                                
                     return RedirectToAction("Libros", "Tienda");            
-                }
-                else
-                {
-                    ModelState.AddModelError("", "Email o password invalidos");
-                    return View(creds);
-                }
+                }                
             }
-            else
-            {
-                return View(creds);
-            }        
+            ModelState.AddModelError("", "Email o password invalidos");
+            return View(credenciales);
         }
         #endregion
 
-        #region //FORGOT PASSWORD
+        #region //FORGOT PASSWORD//
         [HttpGet]
         public IActionResult ForgottenPassword()
         {
@@ -155,19 +133,12 @@ namespace bookstore.Controllers
         {
             if (ModelState.IsValid)
             {
-                if (await this._servicioSQLServer.ExisteEmailCliente(Email))
+                if (await this._servicioSqlServer.ExisteEmailCliente(Email))
                 {
                     return RedirectToAction("Repassword", "Cliente");
                 }
-                else
-                {
-                    return View(Email);
-                }
             }
-            else
-            {
-                return View(Email);
-            }
+            return View(Email);
         }
         #endregion
 
@@ -175,34 +146,30 @@ namespace bookstore.Controllers
         [HttpGet]
         public IActionResult MiPerfil()
         {
-            Cliente _clienteLogin = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente");   
-            return View(_clienteLogin);
+            Cliente cliente = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente");   
+            return View(cliente);
         }
 
         [HttpPost]
-        public async Task<IActionResult> MiPerfil(Cliente clientemodif)  
+        public async Task<IActionResult> MiPerfil(Cliente updateCliente)  
         {
-            Cliente _clientelogueado = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente");
+            Cliente cliente = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente");
+            cliente.Nombre = updateCliente.Nombre;
+            cliente.Apellidos = updateCliente.Apellidos;
+            cliente.Telefono = updateCliente.Telefono;
+            cliente.CredencialesCliente.Email = updateCliente.CredencialesCliente.Email;
+            cliente.CredencialesCliente.NickName = updateCliente.CredencialesCliente.NickName;
+            cliente.Descripcion = updateCliente.Descripcion;
 
-            _clientelogueado.Nombre = clientemodif.Nombre;
-            _clientelogueado.Apellidos = clientemodif.Apellidos;
-            _clientelogueado.Telefono = clientemodif.Telefono;
-            _clientelogueado.CredencialesCliente.Email = clientemodif.CredencialesCliente.Email;
-            _clientelogueado.CredencialesCliente.NickName = clientemodif.CredencialesCliente.NickName;
-            _clientelogueado.Descripcion = clientemodif.Descripcion;
-
-            bool _result = await this._servicioSQLServer.ActualizarDatosCliente(clientemodif);
-            if (_result)
+            bool clienteActualizado await this._servicioSqlServer.ActualizarDatosCliente(updateCliente);
+            if (clienteActualizado)
             {
-                this._servicioSession.AddItemSession<Cliente>("datoscliente", _clientelogueado);
-
+                this._servicioSession.AddItemSession<Cliente>("datoscliente", cliente);
                 return RedirectToAction("PanelInicio"); 
             }
-            else
-            {
-                ViewData["mensajeError"] = "error interno del server al actualizar datos ";
-                return View(clientemodif);
-            }
+
+            ViewData["mensajeError"] = "error interno del server al actualizar datos ";
+            return View(updateCliente);
         }
         #endregion
 
@@ -210,49 +177,49 @@ namespace bookstore.Controllers
         [HttpGet]
         public IActionResult PanelInicio()
         {
-            return View(this._servicioSession.RecuperaItemSession<Cliente>("datoscliente")); 
+            Cliente cliente = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente")
+            return View(cliente); 
         }
         #endregion
 
         #region //MISDATOS//
         [HttpGet]
-        public IActionResult MisDatosEnvio()
+        public  async Task<IActionResult> MisDatosEnvio()
         {
-            ViewData["ListaProvincias"] = this._servicioSQLServer.DevolverProvincias();
+            List<Direccion> direcciones = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente").ListaDirecciones
+            List<Provincia> provincias = await this._ListaProvincias()
 
-            return View(this._servicioSession.RecuperaItemSession<Cliente>("datoscliente").ListaDirecciones);
+            ViewData["ListaProvincias"] = provincias
+            return View(direcciones);
         }
 
         [HttpPost]
-        public async Task<IActionResult> AltaDirecciones(String direccion, String tipoDireccion, String codpro, String codmun, String cp)
+        public async Task<IActionResult> AltaDirecciones(String calle, String tipoDireccion, String codpro, String codmun, String cp)
         {                                                                   
-            Cliente _clientelogueado = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente");
-            List<Provincia> _provincias = await this._servicioSQLServer.DevolverProvincias();
-            List<Municipio> _municipios = await this._servicioSQLServer.DevolverMunicipios(System.Convert.ToInt32(codmun));
+            Cliente cliente = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente");
+            List<Provincia> provincias = await this._ListaProvincias()
+            List<Municipio> municipios = await this._servicioSqlServer.DevolverMunicipios(System.Convert.ToInt32(codmun));
 
-            Direccion _nuevaDirec = new Direccion 
-            {
-                Calle = direccion,
+            Direccion direccion = new Direccion {
+                Calle = calle,
                 CP = System.Convert.ToInt32(cp),
                 EsPrincipal = false,
-                IdDireccion = System.Guid.NewGuid().ToString() + "-" + _clientelogueado.NIF,
+                IdDireccion = System.Guid.NewGuid().ToString() + "-" + cliente.NIF,
                 TipoDireccion = tipoDireccion,
-                Provincia = _provincias.Where((prov) => prov.CodPro == System.Convert.ToInt32(codpro)).Single<Provincia>(),
-                Municipio = _municipios.Where((municipio) => municipio.CodPro == System.Convert.ToInt32(codpro) && municipio.CodMun == System.Convert.ToInt32(codmun)).Single<Municipio>()
+                Provincia = provincias.Where((prov) => prov.CodPro == System.Convert.ToInt32(codpro)).Single<Provincia>(),
+                Municipio = municipios.Where((municipio) => municipio.CodPro == System.Convert.ToInt32(codpro) && municipio.CodMun == System.Convert.ToInt32(codmun)).Single<Municipio>()
             };
 
-            if(await this._servicioSQLServer.AltaNuevaDireccionCliente(_nuevaDirec) == 1)
+            int altaDireccion = await this._servicioSqlServer.AltaNuevaDireccionCliente(direccion)
+            if (altaDireccion == 1)
             {
-                _clientelogueado.ListaDirecciones.Add(_nuevaDirec);
+                cliente.ListaDirecciones.Add(direccion);
+                this._servicioSession.AddItemSession<Cliente>("datoscliente", cliente);
+                return RedirectToAction("MisDatosEnvio");
+            }
 
-                this._servicioSession.AddItemSession<Cliente>("datoscliente", _clientelogueado);
-                return RedirectToAction("MisDatosEnvio");
-            }
-            else
-            {
-                ViewData["mensajeError"] = "error interno del servicio, intentelo de nuevo mas tarde";
-                return RedirectToAction("MisDatosEnvio");
-            }
+            ViewData["mensajeError"] = "error interno del servicio, intentelo de nuevo mas tarde";
+            return RedirectToAction("MisDatosEnvio");
         }
         #endregion
     }

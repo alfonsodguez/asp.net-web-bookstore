@@ -21,22 +21,14 @@ namespace bookstore.Models
 
         public void AddItemSession<T>(string clave, T valor)
         {
-            this._httpContextService
-                .HttpContext
-                .Session
-                .SetString(clave, JsonSerializer.Serialize<T>(valor));
+            this._httpContextService.HttpContext.Session.SetString(clave, JsonSerializer.Serialize<T>(valor));
         }
 
         public T RecuperaItemSession<T>(string clave)
         {
             try
             {
-                return JsonSerializer.Deserialize<T>( 
-                            this._httpContextService
-                                .HttpContext
-                                .Session
-                                .GetString(clave)
-                               );
+                return JsonSerializer.Deserialize<T>(this._httpContextService.HttpContext.Session.GetString(clave));
             }
             catch (Exception)
             {

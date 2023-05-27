@@ -84,7 +84,8 @@
 
         $('a[id*="botonMas-"]').click((ev) => {
             const id = ev.target.id.replace('botonMas-', '');
-            $(`a[id*="botonMenos-${id}"]`).attr('href', 'http://localhost:3000/Pedido/RestarCantidadPedido/' + _id)
+            const url = 'http://localhost:3000/Pedido/RestarCantidadPedido/' + id
+            $(`a[id*="botonMenos-${id}"]`).attr('href', url)
         })
     </script>
 </body>

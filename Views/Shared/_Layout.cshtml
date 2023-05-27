@@ -1,6 +1,6 @@
 ﻿@using bookstore.Models.Interfaces;
 @inject IControlSession _servicioSession
-@{Cliente _clienteLogin = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente");}
+@{Cliente _clienteLogin = this._servicioSession.RecuperarSession<Cliente>("datoscliente");}
 <!DOCTYPE html>
 <html lang="en">
 <head>

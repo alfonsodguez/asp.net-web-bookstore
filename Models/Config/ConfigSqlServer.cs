@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace bookstore.Models
+namespace bookstore.Models.Config
 {
-    public class ConfigSQLServer
+    public class ConfigSqlServer
     {
         public String SqlServerCadenaConexion { get; set; }
     }

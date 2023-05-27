@@ -1,9 +1,8 @@
 ﻿@model List<Libro>
 <div class="card-group">
-        @foreach (Libro unLibro in Model)
-        {
-            <partial name="_VistaParcialMiniLibro" model="unLibro" />
-        }
+    @foreach (Libro libro in Model) {
+        <partial name="_VistaParcialMiniLibro" model="libro" />
+    }
 </div>
 
 

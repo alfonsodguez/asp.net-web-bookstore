@@ -7,7 +7,7 @@ namespace bookstore.Models.Interfaces
 {
     public interface IControlSession
     {
-        void AddItemSession<T>(String clave, T valor);
-        T RecuperaItemSession<T>(String clave);
+        void ActualizarSession<T>(String clave, T valor);
+        T RecuperarSession<T>(String clave);
     }
 }

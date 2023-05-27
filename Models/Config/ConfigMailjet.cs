@@ -3,9 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace bookstore.Models
+namespace bookstore.Models.Config
 {
-    public class EmailServerMAILJET
+    public class ConfigMailjet
     {
         public String APIKey { get; set; }
         public String SecretKey { get; set; }

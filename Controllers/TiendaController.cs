@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using bookstore.Models.Interfaces;
 using bookstore.Models;
 
@@ -18,41 +17,41 @@ namespace bookstore.Controllers
             this._accesoDB = servicioDBInyect;
         }
 
+
         [HttpGet]                                         
         public async Task<IActionResult> Libros(String id) 
         {
-            Materia _materiaUrl = new Materia();   
+            Materia materia = new Materia();   
 
             if (String.IsNullOrEmpty(id))  
             {
-                _materiaUrl.IdMateria = 5;
-                _materiaUrl.IdMateriaPadre = 0;
-                _materiaUrl.NombreMateria = "Informatica;informatica";
+                materia.IdMateria = 5;
+                materia.IdMateriaPadre = 0;
+                materia.NombreMateria = "Informatica;informatica";
             }
             else
             {
-                _materiaUrl.IdMateria = System.Convert.ToInt32(id.Split("_")[0]);
-                _materiaUrl.IdMateriaPadre = System.Convert.ToInt32(id.Split("_")[1]);
-                _materiaUrl.NombreMateria = id.Split("_")[2].ToString();
+                materia.IdMateria = System.Convert.ToInt32(id.Split("")[0]);
+                materia.IdMateriaPadre = System.Convert.ToInt32(id.Split("")[1]);
+                materia.NombreMateria = id.Split("")[2].ToString();
             }     
-
-            List<Libro> _listaLibros = await this._accesoDB.DevolverLibros(_materiaUrl.IdMateria, null);
-            return View(_listaLibros);
+            List<Libro> libros = await this._accesoDB.DevolverLibros(materia.IdMateria, null);
+            return View(libros);
         }
 
         [HttpGet]
         public async Task<IActionResult> MostrarLibro([FromQuery]String isbn, [FromQuery]String idmateria) 
         {
             List<Libro> libros = await this._accesoDB.DevolverLibros(System.Convert.ToInt32(idmateria), isbn);
-            Libro _unlibro = libros.Single<Libro>();
-            return View(_unlibro);  
+            Libro libro = libros.Single<Libro>();
+            return View(libro);  
         }
 
         [HttpPost]
-        public async Task<IActionResult> BuscadorLibros(String cajaTexto, String optradio) 
+        public async Task<IActionResult> BuscadorLibros(String busqueda, String opcion) 
         {
-            List<Libro> _librosBuscados = await this._accesoDB.BuscarLibros(optradio, cajaTexto);
-            return View("Libros", _librosBuscados); 
+            List<Libro> libros = await this._accesoDB.BuscarLibros(opcion, busqueda);
+            return View("Libros", libros); 
         }
     }
 }

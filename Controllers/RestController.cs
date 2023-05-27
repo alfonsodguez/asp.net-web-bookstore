@@ -11,14 +11,12 @@ using System.IO;
 
 namespace bookstore.Controllers
 {
-
-    [Route("api/[controller]/[action]")]  
     [ApiController]
+    [Route("api/[controller]/[action]")]  
 
     //----------- servicio RESTFULL ---------------
     public class RestController : ControllerBase 
     {
-
         private IDBAccess _accesoDB;
         private IControlSession _servicioSession;
 
@@ -32,18 +30,21 @@ namespace bookstore.Controllers
         [HttpGet]
         public async Task<IActionResult> DevolverMunicipios([FromQuery] int codpro)
         {
-            List<Municipio> _listaMunis = await this._accesoDB.DevolverMunicipios(codpro);
-            return new JsonResult(_listaMunis);
+            List<Municipio> municipios = await this._accesoDB.DevolverMunicipios(codpro);
+            return new JsonResult(municipios);
         }
 
         [HttpPost]
         public IActionResult uploadImagen(IFormFile imagen)  
         {
-            String _nif = this._servicioSession.RecuperaItemSession<Cliente>("datoscliente").NIF;
-            String _nombrefichero = imagen.FileName.Split('.')[0] + "-" + _nif + "." + imagen.FileName.Split('.')[1];
+            Cliente cliente = this._servicioSession.RecuperarSession<Cliente>("datoscliente")
+            String nif = cliente.NIF
+            String nombreFichero = imagen.FileName.Split('.')[0] + "-" + nif 
+            String extensionFichero = "." + imagen.FileName.Split('.')[1];
+            String fichero = nombreFichero + extensionFichero
 
-            FileStream _lectorEscritor = new FileStream(Path.Combine("Uploads", _nombrefichero),FileMode.Create);
-            imagen.CopyTo(_lectorEscritor);
+            FileStream file = new FileStream(Path.Combine("Uploads", fichero), FileMode.Create);
+            imagen.CopyTo(file);
 
             return Ok(new { codigo=0, mensaje = "imagen subida al server ok!!" });
         }

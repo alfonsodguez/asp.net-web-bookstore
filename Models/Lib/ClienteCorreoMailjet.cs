@@ -17,11 +17,11 @@ using System.IO;
 
 namespace bookstore.Models
 {
-    public class ClienteCorreoMAILJET : IClienteEmail
+    public class ClienteCorreoMailjet : IClienteEmail
     {
         private IOptions<EmailServerMAILJET> _configServerMAILJET;
       
-        public ClienteCorreoMAILJET(IOptions<EmailServerMAILJET> objConfigServerMAILJET)
+        public ClienteCorreoMailjet(IOptions<EmailServerMAILJET> objConfigServerMAILJET)
         {
             this._configServerMAILJET = objConfigServerMAILJET;
         }

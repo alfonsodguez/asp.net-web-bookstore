@@ -19,10 +19,7 @@
         <div class="col-4">
             <h2><strong>@Model.Precio €</strong></h2>
             <img src="~/images/imagenComprar_detallesLibro.png" />
-            <a class="btn btn-primary"
-               asp-controller="Pedido" asp-action="AddLibroPedido"
-               asp-all-route-data="@(new Dictionary<String, String> { { "id", Model.ISBN} })"
-            >
+            <a class="btn btn-primary" asp-controller="Pedido" asp-action="AddLibroPedido" asp-all-route-data="@(new Dictionary<String, String> { { "id", Model.ISBN} })">
                 <img src="~/images/BotonComprarLibroDetalles.png" />
             </a>
         </div>

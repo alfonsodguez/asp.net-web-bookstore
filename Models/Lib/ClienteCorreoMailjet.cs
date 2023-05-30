@@ -2,15 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using bookstore.Models.Interfaces;
 using Microsoft.Extensions.Options;
-
 // API mailjet
 using Mailjet.Client;
 using Mailjet.Client.Resources;
-
-//mail asp-net
+// email asp-net
 using System.Net.Mail;
 using System.Net;
 using System.IO;

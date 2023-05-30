@@ -2,11 +2,9 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
 using bookstore.Models.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using bookstore.Models;
-
 
 namespace bookstore.InfraEstructura.ViewComponents
 {
@@ -23,9 +21,9 @@ namespace bookstore.InfraEstructura.ViewComponents
         [HttpGet]
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            List<Materia> _listaMaterias = await this._accesoDB.DevolverMaterias(0);
+            List<Materia> materias = await this._accesoDB.DevolverMaterias(0);
             
-            return View(_listaMaterias);
+            return View(materias);
         }
     }
 }

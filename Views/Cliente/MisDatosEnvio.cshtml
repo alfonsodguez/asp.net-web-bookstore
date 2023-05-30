@@ -41,9 +41,9 @@
                                             <label for="inputProvincia"><strong>Provincia</strong></label>
                                             <select id="inputProvincia" name="codpro" class="form-control">
                                                 <option value="0" selected>Elige provincia...</option>
-                                                @{ foreach (Provincia item in ViewData["ListaProvincias"] as List<Provincia>)
+                                                @{ foreach (Provincia provincia in ViewData["ListaProvincias"] as List<Provincia>)
                                                     {
-                                                        <option value="@item.CodPro">@item.NombreProvincia</option>
+                                                        <option value="@provincia.CodPro">@provincia.NombreProvincia</option>
                                                     }
                                                 }
                                             </select>
@@ -73,42 +73,15 @@
         </div>
     </div>
     @if (Model.Count != 0) {
-        @foreach (Direccion direc in Model) {
+        @foreach (Direccion direccion in Model) {
             <div class="row">
                 <div class="col">
-                    <partial name="_VistaParcialMiniDireccion" model="direc" />
+                    <partial name="_VistaParcialMiniDireccion" model="direccion" />
                 </div>
             </div>
         }
     }
 </div>
-<script>
-    $('#crearDireccion').click((ev) => document.forms['formAltaDirec'].submit());
-    $('#inputProvincia').change(function(evt) {
-        $('#inputLocalidad > option[value != 0]').remove();
-
-        const codProv = evt.target.value; //<---codigo provincia seleccionado
-        if (codProv !="0") {
-            $('#inputLocalidad').removeAttr('disabled');
-            // ajax 
-            const url = 'https://localhost:44311/api/RESTAgapea/DevolverMunicipios/?codpro=' + codProv
-            $.get(url)
-            .done((muncipios)=>{
-                muncipios.forEach((municipio)=>{
-                    $('#inputLocalidad').append('<option value=' + municipio.codMun + '>' + municipio.nombreMunicipio + '</option>');
-                });
-            })
-            .fail((err)=> { console.log(err) });
-        }
-    });
-    $('a[id^=["btnEditarDireccion_"]').click((ev) => {
-        var idDireccion = $(ev.target).attr('id').split('_')[1];
-
-        // TODO
-        $.ajax({
-            method: 'POST'
-            url: 'https://localhost:44311/api/RESTAgapea/DameDireccion', 
-            data: { calle: , cp: }  
-        })
-    });
-</script>
+<script src="../../wwwroot/js/crearDireccion.js"></script>
+<script src="../../wwwroot/js/dropdownMunicipios.js"></script>
+<script src="../../wwwroot/js/modificarDireccion"></script>

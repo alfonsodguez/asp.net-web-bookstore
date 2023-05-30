@@ -76,17 +76,7 @@
             </a>
         </div>
     </div>
-    <script>
-        $('a[id*="botonMenos-"]').click((ev) => {
-            const id = ev.target.id.replace('botonMenos-', '');
-            $(`label[id="ID-${id}"]`).text() == 1 ? $(ev.target).attr('href', 'javascript:void(0)') : true;
-        });
-
-        $('a[id*="botonMas-"]').click((ev) => {
-            const id = ev.target.id.replace('botonMas-', '');
-            const url = 'http://localhost:3000/Pedido/RestarCantidadPedido/' + id
-            $(`a[id*="botonMenos-${id}"]`).attr('href', url)
-        })
-    </script>
+    <script src="../../wwwroot/js/botonMenos.js"></script>
+    <script src="../../wwwroot/js/botonMas.js"></script>
 </body>
 </html>

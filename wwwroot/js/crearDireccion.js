@@ -1,0 +1,1 @@
+$('#crearDireccion').click((ev) => document.forms['formAltaDirec'].submit())

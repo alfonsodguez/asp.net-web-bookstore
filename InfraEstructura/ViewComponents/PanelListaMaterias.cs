@@ -21,8 +21,7 @@ namespace bookstore.InfraEstructura.ViewComponents
         [HttpGet]
         public async Task<IViewComponentResult> InvokeAsync()
         {
-            List<Materia> materias = await this._accesoDB.DevolverMaterias(0);
-            
+            List<Materia> materias = await this._accesoDB.DevolverMaterias(0);            
             return View(materias);
         }
     }

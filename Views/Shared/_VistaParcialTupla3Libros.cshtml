@@ -1,6 +1,7 @@
 ﻿@model List<Libro>
 <div class="card-group">
-    @foreach (Libro libro in Model) {
+    @foreach (Libro libro in Model) 
+    {
         <partial name="_VistaParcialMiniLibro" model="libro" />
     }
 </div>

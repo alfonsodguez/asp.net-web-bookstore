@@ -16,36 +16,38 @@ namespace bookstore.Models
 {
     public class ClienteCorreoMailjet : IClienteEmail
     {
-        private IOptions<EmailServerMAILJET> _configServerMAILJET;
+        private IOptions<EmailServerMAILJET> _configServerMailjet;
       
-        public ClienteCorreoMailjet(IOptions<EmailServerMAILJET> objConfigServerMAILJET)
+        public ClienteCorreoMailjet(IOptions<EmailServerMAILJET> configServerMailject)
         {
-            this._configServerMAILJET = objConfigServerMAILJET;
+            this._configServerMailjet = configServerMailject;
         }
 
 
         #nullable enable
-        public void EnviarEmail(string ToEmailCliente, string Subject, string Body, string? nombreAdjunto)
+        public void EnviarEmail(string destinatario, string asunto, string cuerpo, string? nombreAdjunto)
         {
-            SmtpClient _clienteSMTP = new SmtpClient();
-            _clienteSMTP.Host = this._configServerMAILJET.Value.ServerName;
-            _clienteSMTP.Credentials = new NetworkCredential(this._configServerMAILJET.Value.APIKey, this._configServerMAILJET.Value.SecretKey);
+            String ServerName = this._configServerMailjet.Value.ServerName;
+            String ApiKey     = this._configServerMailjet.Value.APIKey;
+            String SecretKey  = this._configServerMailjet.Value.SecretKey
 
-            MailAddress remitente = new MailAddress("aabebop@mailfence.com");  
+            SmtpClient clienteSMTP  = new SmtpClient();
+            clienteSMTP.Host = ServerName
+            clienteSMTP.Credentials = new NetworkCredential(ApiKey, SecretKey);
 
-            MailAddress destinatario = new MailAddress(ToEmailCliente);
-
-            MailMessage _mensajeAEnviar = new MailMessage(remitente, destinatario);
-            _mensajeAEnviar.Body = Body;
-            _mensajeAEnviar.Subject = Subject;
-            _mensajeAEnviar.IsBodyHtml = true; 
+            MailAddress remitente = new MailAddress("admin@agapea.com");  
+            MailAddress destinatario = new MailAddress(destinatario);
+            MailMessage mensaje = new MailMessage(remitente, destinatario);
+            mensaje.cuerpo = cuerpo;
+            mensaje.asunto = asunto;
+            mensaje.IscuerpoHtml = true; 
 
             if (!String.IsNullOrEmpty(nombreAdjunto))
             {
-                FileStream _filecontent = new FileStream(nombreAdjunto, FileMode.Open, FileAccess.Read);
-                _mensajeAEnviar.Attachments.Add(new Attachment(_filecontent, nombreAdjunto, "application/pdf"));
+                FileStream fileContent = new FileStream(nombreAdjunto, FileMode.Open, FileAccess.Read);
+                mensaje.Attachments.Add(new Attachment(fileContent, nombreAdjunto, "application/pdf"));
             }
-            _clienteSMTP.SendAsync(_mensajeAEnviar, null);
+            clienteSMTP.SendAsync(mensaje, null);
         }
         #nullable disable
     }

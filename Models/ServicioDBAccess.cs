@@ -124,15 +124,12 @@ namespace bookstore.Models
                 insertCliente.Parameters.AddWithValue("@Ape", cliente.Apellidos);
                 insertCliente.Parameters.AddWithValue("@Em", cliente.CredencialesCliente.Email);
                 insertCliente.Parameters.AddWithValue("@Nick", cliente.CredencialesCliente.NickName);
-
                 //hasheamos la password 
                 int salt = 10
                 String hash = BCrypt.Net.BCrypt.HashPassword(cliente.CredencialesCliente.Password, salt);
                 insertCliente.Parameters.AddWithValue("@Hp", hash);
-
                 //cremaos un identificador unico para el idDireccion
                 insertCliente.Parameters.AddWithValue("@IdDir", "Principal-" + cliente.NIF); 
-
                 insertCliente.Parameters.AddWithValue("@tlfno", cliente.Telefono);
                 insertCliente.Parameters.AddWithValue("@Act", false); 
                 insertCliente.Parameters.AddWithValue("@Desc", DBNull.Value); 
@@ -268,7 +265,7 @@ namespace bookstore.Models
                 SqlConnection conexionDB = new SqlConnection(this._cadenaConexionDB);
                 await conexionDB.OpenAsync();
 
-                SqlCommand selectMaterias = new SqlCommand("SELECT * FROM dbo.Materias WHERE IdMateriaPadre= @id",conexionDB);
+                SqlCommand selectMaterias = new SqlCommand("SELECT * FROM dbo.Materias WHERE IdMateriaPadre= @id", conexionDB);
                 selectMaterias.Parameters.AddWithValue("@id", idmateriapadre);
 
                 SqlDataReader cursorMaterias = await selectMaterias.ExecuteReaderAsync();
@@ -290,7 +287,7 @@ namespace bookstore.Models
             }
         }
 
-#nullable enable
+        #nullable enable
         public async Task<List<Libro>?> DevolverLibros(int idmateria, String? isbn)
         {
             try
@@ -400,7 +397,7 @@ namespace bookstore.Models
                 return null;
             }
         }
-#nullable disable
+        #nullable disable
         #endregion
 
         #region //PEDIDO// 
@@ -426,7 +423,6 @@ namespace bookstore.Models
                     pedidoActual.ListaPedido.ForEach((ItemPedido item) => {
                         SqlCommand insertItem = new SqlCommand("dbo.ItemsPedido", conexionDB);
                         insertItem.CommandType = CommandType.StoredProcedure;
-
                         insertItem.Parameters.AddWithValue("@IdPedido", pedidoActual.IdPedido);
                         insertItem.Parameters.AddWithValue("@ISBN", item.LibroPedido.ISBN);
                         insertItem.Parameters.AddWithValue("@CantidadLibro", item.CantidadLibro);
@@ -434,7 +430,6 @@ namespace bookstore.Models
                         if (insertItem.ExecuteNonQuery() != 1) {
                             return false
                         }
-
                     });
                     return true;
                 }
@@ -492,7 +487,6 @@ namespace bookstore.Models
                 await conexion.OpenAsync();
 
                 SqlCommand insertDireccion = new SqlCommand(@"INSERT INTO dbo.Direcciones VALUES (@id ,@codpro, @codmun, @calle, @cp, @tipo, @esppal)", conexion);
-
                 insertDireccion.Parameters.AddWithValue("@id", direccion.IdDireccion);
                 insertDireccion.Parameters.AddWithValue("@codpro", direccion.Provincia.CodPro);
                 insertDireccion.Parameters.AddWithValue("@codmun", direccion.Municipio.CodMun);

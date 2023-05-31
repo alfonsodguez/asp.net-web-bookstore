@@ -1,14 +1,12 @@
 ﻿@model List<Materia>
 <div class="list-group">
-    @{ 
-        foreach (Materia item in Model)
+    @{
+        foreach (Materia materia in Model) 
         {
-            <a class="list-group-item list-group-item-action"
+            <a class="list-group-materia list-group-materia-action" 
                asp-controller="Tienda" asp-action="Libros"
-               asp-all-route-data="@(new Dictionary<String, String> {  
-                    { "id", item.IdMateria +"_"+ item.IdMateriaPadre +"_"+ item.NombreMateria.Split(";")[1].ToString()}
-            })">
-                @item.NombreMateria.Split(";")[0].ToString()
+               asp-all-route-data="@(new Dictionary<String, String> {{ "id", materia.IdMateria +"_"+ materia.IdMateriaPadre +"_"+ materia.NombreMateria.Split(";")[1].ToString() }})">
+                    @materia.NombreMateria.Split(";")[0].ToString()
             </a>
         }
     }

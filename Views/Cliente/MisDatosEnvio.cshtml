@@ -41,7 +41,8 @@
                                             <label for="inputProvincia"><strong>Provincia</strong></label>
                                             <select id="inputProvincia" name="codpro" class="form-control">
                                                 <option value="0" selected>Elige provincia...</option>
-                                                @{ foreach (Provincia provincia in ViewData["ListaProvincias"] as List<Provincia>)
+                                                @{ 
+                                                    foreach (Provincia provincia in ViewData["ListaProvincias"] as List<Provincia>)
                                                     {
                                                         <option value="@provincia.CodPro">@provincia.NombreProvincia</option>
                                                     }
@@ -72,8 +73,10 @@
             </div>
         </div>
     </div>
-    @if (Model.Count != 0) {
-        @foreach (Direccion direccion in Model) {
+    @if (Model.Count != 0) 
+    {
+        foreach (Direccion direccion in Model) 
+        {
             <div class="row">
                 <div class="col">
                     <partial name="_VistaParcialMiniDireccion" model="direccion" />

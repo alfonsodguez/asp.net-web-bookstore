@@ -5,7 +5,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - AgapeaNetCore_V5</title>
+    <title>@ViewData["Title"] - asp.net-web-bookstore</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" />
 </head>
@@ -47,9 +47,7 @@
                         <input id="password" type="password" asp-for="@Model.Password" class="form-control" placeholder="introduce tu password" />
                         <span class="text-danger" asp-validation-for="@Model.Password"></span>
                     </div>
-                    <a href="javascript:;" onclick="document.forms['formlogin'].submit()" class="btn btn-primary">
-                        <img src="~/images/BotonLoginUsuario.png" />
-                    </a>
+                    <a href="javascript:;" onclick="document.forms['formlogin'].submit()" class="btn btn-primary"><img src="~/images/BotonLoginUsuario.png" /></a>
                 </form>
             </div>
             <div class="col-8">

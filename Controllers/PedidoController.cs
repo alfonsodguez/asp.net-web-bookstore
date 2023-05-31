@@ -18,13 +18,13 @@ namespace bookstore.Controllers
     {
         private IDBAccess _conexionDB;
         private IClienteEmail _servicioEnvioEmail;
-        private IControlSession _servicioSession
+        private IControlSession _servicioSession;
 
-        public PedidoController(IDBAccess servicioDBInyect, IClienteEmail servicioEmailInyect, IControlSession servicioSessionInectado)
+        public PedidoController(IDBAccess servicioDBInyect, IClienteEmail servicioEmailInyect, IControlSession servicioSessionInyect)
         {
             this._conexionDB = servicioDBInyect;
             this._servicioEnvioEmail = servicioEmailInyect;
-            this._servicioSession = servicioSessionInectado;
+            this._servicioSession = servicioSessionInyect;
         }
 
 
@@ -81,7 +81,7 @@ namespace bookstore.Controllers
             int index = cliente.PedidoActual.ListaPedido.FindIndex(itemPedido => itemPedido.LibroPedido.ISBN == isbn);
             cliente.PedidoActual.ListaPedido.RemoveAt(index);
          
-             this._servicioSession.ActualizarSession<Cliente>("datoscliente", cliente);
+            this._servicioSession.ActualizarSession<Cliente>("datoscliente", cliente);
 
             int elementosEnPedido = cliente.PedidoActual.ListaPedido.Count() 
             if (elementosEnPedido > 0) {
@@ -118,7 +118,9 @@ namespace bookstore.Controllers
         public IActionResult SumarCantidad(String isbn)
         {
             Cliente cliente = this._servicioSession.RecuperarSession<Cliente>("datoscliente")
-            cliente.PedidoActual.ListaPedido
+            cliente
+                .PedidoActual
+                .ListaPedido
                 .Where<ItemPedido>(itemPedido => itemPedido.LibroPedido.ISBN == isbn)
                 .Single<ItemPedido>().CantidadLibro += 1;
 
@@ -196,11 +198,11 @@ namespace bookstore.Controllers
             return facturaHTML
         }
 
-        private void _EnviarFacturaPorEmail(Cliente cliente, String factura, int idfactura)
+        private void _EnviarFacturaPorEmail(Cliente cliente, String factura, int idFactura)
         {
             String destinatario = cliente.CredencialesCliente.Email
             String asunto = "Pedido realizado correctamente en Agapea.com"
-            String adjunto = "factura-" + idfactura + ".pdf"
+            String adjunto = "factura-" + idFactura + ".pdf"
             String body = factura
             this._servicioEnvioEmail.EnviarEmail(destinatario, asunto, body, adjunto);
         }

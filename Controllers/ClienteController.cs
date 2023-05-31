@@ -17,14 +17,14 @@ namespace bookstore.Controllers
     public class ClienteController : Controller
     {
         private IDBAccess _servicioSqlServer;
-        private IClienteEmail _servicioClienteEmail;
+        private IClienteEmail _servicioEmail;
         private IControlSession _servicioSession; 
 
-        public ClienteController(IDBAccess servicioDBInyect, IClienteEmail servicioMailInyect, IControlSession servicioSessionInectado)
+        public ClienteController(IDBAccess servicioDBInyect, IClienteEmail servicioEmailInyect, IControlSession servicioSessionInyect)
         {
-            this._servicioSqlServer = servicioDBInyect;      //<-- servicio acceso a datos
-            this._servicioClienteEmail = servicioMailInyect; //<-- servicio cliente de correo 
-            this._servicioSession = servicioSessionInectado; //<-- servicio session 
+            this._servicioSqlServer = servicioDBInyect;      
+            this._servicioEmail = servicioEmailInyect;  
+            this._servicioSession = servicioSessionInyect;   
         }
 
 
@@ -52,7 +52,7 @@ namespace bookstore.Controllers
                                     $"<a href='https://localhost:44311/Cliente/ActivarCuenta/{cliente.CredencialesCliente.Email}'>" +
                                     $"aqui</a> para activar tu cuenta";
 
-                    this._servicioClienteEmail.EnviarEmail(destinatario, asunto, body, adjunto);                                   
+                    this._servicioEmail.EnviarEmail(destinatario, asunto, body, adjunto);                                   
                     return RedirectToAction("RegistroOK","Cliente");
                 }
                 ModelState.AddModelError("", "Error interno, intentelo de nuevo mas tarde");
@@ -73,9 +73,9 @@ namespace bookstore.Controllers
 
         #region //ACTIVAR CUENTA//
         [HttpGet]
-        public async Task<IActionResult> ActivarCuenta(String id)  
+        public async Task<IActionResult> ActivarCuenta(String email)  
         {
-            bool cuentaActivadaOk = await this._servicioSqlServer.ActivarCuenta(id)
+            bool cuentaActivadaOk = await this._servicioSqlServer.ActivarCuenta(email)
             if (cuentaActivadaOk) 
             {
                 return RedirectToAction("Login", "Cliente");

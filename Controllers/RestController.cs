@@ -27,9 +27,9 @@ namespace bookstore.Controllers
 
 
         [HttpGet]
-        public async Task<IActionResult> DevolverMunicipios([FromQuery] int codpro)
+        public async Task<IActionResult> DevolverMunicipios([FromQuery] int codPro)
         {
-            List<Municipio> municipios = await this._accesoDB.DevolverMunicipios(codpro);
+            List<Municipio> municipios = await this._accesoDB.DevolverMunicipios(codPro);
             return new JsonResult(municipios);
         }
 

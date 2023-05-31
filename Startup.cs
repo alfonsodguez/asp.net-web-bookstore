@@ -4,6 +4,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using System;
+using bookstore.Models.Lib;
+using bookstore.Models.Config;
 using bookstore.Models.Interfaces;
 using bookstore.Models;
 
@@ -24,14 +26,14 @@ namespace bookstore
 
             #region ----- servicio acceso a datos -------
             services.AddScoped<IDBAccess, SqlServerDBAccess>();
-            services.Configure<ConfigSQLServer>( (ConfigSQLServer opciones) => {
+            services.Configure<ConfigSqlServer>( (ConfigSqlServer opciones) => {
                 opciones.SqlServerCadenaConexion = Configuration.GetConnectionString("SqlServerCadenaConexion");
             });
             #endregion
 
             #region ----- servicio cliente de correo -----
-            services.AddScoped<IClienteEmail, ClienteCorreoMAILJET>();
-            services.Configure<EmailServerMAILJET>(Configuration.GetSection("SMTPMailJet")); 
+            services.AddScoped<IClienteEmail, ClienteCorreoMailjet>();
+            services.Configure<ConfigMailject>(Configuration.GetSection("SMTPMailJet")); 
             #endregion
 
             #region ----- servicio estado de session --------

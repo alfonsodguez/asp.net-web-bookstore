@@ -51,7 +51,7 @@ namespace bookstore.Models
 
                 #region --------- con LINQ ------------
                 /*
-                return municipios
+                return cursorMunicipios
                     .Cast<IDataRecord>()
                     .Select((IDataRecord fila) => new Municipio {
                         CodPro = codpro,

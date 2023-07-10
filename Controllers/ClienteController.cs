@@ -28,7 +28,6 @@ namespace bookstore.Controllers
         }
 
 
-        #region //REGISTRO//
         [HttpGet]
         public async Task<IActionResult> Registro()
         {
@@ -69,9 +68,7 @@ namespace bookstore.Controllers
         {
             return View();
         }
-        #endregion
 
-        #region //ACTIVAR CUENTA//
         [HttpGet]
         public async Task<IActionResult> ActivarCuenta(String email)  
         {
@@ -89,9 +86,7 @@ namespace bookstore.Controllers
         {
             return View();
         }
-        #endregion
 
-        #region //LOGIN//
         [HttpGet]
         public IActionResult Login()
         {
@@ -114,9 +109,7 @@ namespace bookstore.Controllers
             ModelState.AddModelError("", "Email o password invalidos");
             return View(credenciales);
         }
-        #endregion
 
-        #region //FORGOT PASSWORD//
         [HttpGet]
         public IActionResult ForgottenPassword()
         {
@@ -135,9 +128,7 @@ namespace bookstore.Controllers
             }
             return View(email);
         }
-        #endregion
 
-        #region //MIPERFIL//
         [HttpGet]
         public IActionResult MiPerfil()
         {
@@ -166,18 +157,14 @@ namespace bookstore.Controllers
             ViewData["mensajeError"] = "error interno del server al actualizar datos ";
             return View(updateCliente);
         }
-        #endregion
 
-        #region //PANELINICIO//
         [HttpGet]
         public IActionResult PanelInicio()
         {
             Cliente cliente = this._servicioSession.RecuperarSession<Cliente>("datoscliente")
             return View(cliente); 
         }
-        #endregion
 
-        #region //MISDATOS//
         [HttpGet]
         public  async Task<IActionResult> MisDatosEnvio()
         {
@@ -216,7 +203,6 @@ namespace bookstore.Controllers
             ViewData["mensajeError"] = "error interno del servicio, intentelo de nuevo mas tarde";
             return RedirectToAction("MisDatosEnvio");
         }
-        #endregion
 
 
         private async Task<List<Provincia>> _ListaProvincias()

@@ -1,11 +1,19 @@
 ﻿const cajaEmail = document.getElementById('inputEmail')
+const cajaPassword = document.getElementById('inputPassword')
+const cajasTexto = document.getElementsByTagName('input')
+
 cajaEmail.addEventListener('blur', validarEmail)
+cajaPassword.addEventListener('blur', validarPassword)
+Array.from(cajasTexto).forEach(caja => caja.addEventListener('blur', validarCampos))
+
 function validarEmail(ev) {
     let success = true
     if (ev.target.value == '') {
         success = false
     }
-    if (/^.*.*\.(com|es|uk|it|org)$/.test(ev.target.value) == false) {
+
+    const reEmail = /^.*.*\.(com|es|uk|it|org)$/
+    if (reEmail.test(ev.target.value) == false) {
         success = false
     }
     if (success == false) {
@@ -28,8 +36,6 @@ function validarEmail(ev) {
     }
 }
 
-const cajaPassword = document.getElementById('inputPassword')
-cajaPassword.addEventListener('blur', validarPassword)
 function validarPassword(ev) {
     let validated = true
 
@@ -84,8 +90,6 @@ function validarPassword(ev) {
 }
 
 //añadimos un listener a todos los campos
-const cajasTexto = document.getElementsByTagName('input')
-Array.from(cajasTexto).forEach(caja => caja.addEventListener('blur', validarCampos))
 function validarCampos(ev) {
     //validamos campo que provoca el evento
     if (ev.target.getAttribute('type') === 'text') {
